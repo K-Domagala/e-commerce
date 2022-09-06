@@ -1,0 +1,478 @@
+openapi: 3.0.1
+info:
+  title: E-commerce API
+  version: 1.0.0
+  description: A basic API for the back-end of an e-commerce website
+paths:
+  /users:
+    summary: Gets the user data
+    description: Used to create a new user
+    post:
+      summary: Create user
+      description: Creates a new user
+      operationId: user-newUser
+      requestBody:
+        description: Information about the new user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first-name
+                - last-name
+                - e-mail
+                - password
+                - address_1
+                - postcode
+                - phone_number
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                e-mail:
+                  type: string
+                password:
+                  type: string
+                address_1:
+                  type: string
+                address_2:
+                  type: string
+                address_3:
+                  type: string
+                postcode:
+                  type: string
+                phone_number:
+                  type: string
+      responses:
+        '201':
+          description: Succesfull post response
+          content:
+            application/json:
+              examples:
+                user:
+                  value: >-
+                    {"id":"1","first_name":"John","last_name":"Smith","e-mail":"john_smith@example.com","address_1":"1
+                    Example close","address_2":"line 2","address3":"line
+                    3","postcode":"AB12 3CD","phone_number":"07123456789"}
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: first-name should not exceed 50 characters
+      tags:
+        - Users
+  /users/{id}:
+    summary: CURL on specific users
+    description: Apply CURL commands to a specific user
+    get:
+      summary: Get user information
+      description: Retrieve all information about a specific user
+      operationId: user-getUserById
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Succesfull get response
+          content:
+            application/json:
+              examples:
+                user:
+                  value: >-
+                    {"id":"1","first_name":"John","last_name":"Smith","e-mail":"john_smith@example.com","address_1":"1
+                    Example close","address_2":"line 2","address3":"line
+                    3","postcode":"AB12 3CD","phone_number":"07123456789"}
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to view this page
+        '404':
+          description: User does not exist
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: user does not exist
+      tags:
+        - Users
+    put:
+      summary: Update user info
+      description: Updates the information about a certain user using object;json
+      operationId: user-update
+      requestBody:
+        description: Information you want to update for the user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                e-mail:
+                  type: string
+                password:
+                  type: string
+                address_1:
+                  type: string
+                address_2:
+                  type: string
+                address_3:
+                  type: string
+                postcode:
+                  type: string
+                phone_number:
+                  type: string
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Succesfull put response
+          content:
+            application/json:
+              examples:
+                user:
+                  value: >-
+                    {"id":"1","first_name":"John","last_name":"Smith","e-mail":"john_smith@example.com","address_1":"1
+                    Example close","address_2":"line 2","address3":"line
+                    3","postcode":"AB12 3CD","phone_number":"07123456789"}
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: first-name should not exceed 50 characters
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to view this page
+      tags:
+        - Users
+    delete:
+      summary: Deletes user
+      description: Delete a specific user
+      operationId: user-delete
+      parameters:
+        - name: id
+          in: path
+          description: The id of the user.
+          required: true
+          schema:
+            type: number
+      responses:
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+        '410':
+          description: Successful delete
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: user has been deleted
+      tags:
+        - Users
+  /orders:
+    summary: Used to create new order
+    description: >-
+      This path is used to retrieve all of the orders data fron the orders.json
+      file.
+    post:
+      summary: Adds a new order
+      description: Add a new order to the orders.json file
+      operationId: add_order
+      requestBody:
+        description: Information used to create a new order
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - products
+              properties:
+                user_id:
+                  type: number
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      quantity:
+                        type: number
+      responses:
+        '201':
+          description: Succesfull post response
+          content:
+            application/json:
+              examples:
+                order:
+                  value: >-
+                    {"id":"1","user_id":"5","products":[{"product_id":"3","quantity":"17"},{"product_id":"5","quantity":"1"}],"status":"placed"}
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: product_id '7' does not exist
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+      tags:
+        - Orders
+    get:
+      summary: Get users orders
+      description: Get data for orders placed by specific user
+      operationId: orders-getByUser
+      parameters:
+        - name: user_id
+          in: query
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Succesfull get response
+          content:
+            application/json:
+              examples:
+                order:
+                  value: >-
+                    [{"id":"1","user_id":"5","products":[{"product_id":"3","quantity":"17"},{"product_id":"5","quantity":"1"}],"status":"despatched"},{"id":"7","user_id":"5","products":[{"product_id":"5","quantity":"7"},{"product_id":"4","quantity":"12"},{"product_id":"67","quantity":"1"}],"status":"complete"}]
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: user_id '27' does not exist
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+      tags:
+        - Orders
+  /orders/{id}/:
+    summary: Update status of an order
+    description: >-
+      This path is used to change the status of an order matching the provided
+      id. It modifies the state attribute of each order.
+    put:
+      summary: Update the state of an order
+      description: >-
+        Update the state of an order with a matching id. This is used to cancel
+        an order (set the order status to cancelled)
+      operationId: update_order
+      requestBody:
+        description: Information used to update the existing order
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      parameters:
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Succesfull put response
+          content:
+            application/json:
+              examples:
+                order:
+                  value: '{"id":"1","status":"cancelled"}'
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: order_id '7' does not exist
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+      tags:
+        - Orders
+    get:
+      summary: Get order details
+      description: Retrieves order details matching the order id
+      operationId: order-get
+      parameters:
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Succesfull get response
+          content:
+            application/json:
+              examples:
+                user:
+                  value: >-
+                    {"id":"1","user_id":"2","products":[{"id":"3","name":"Drill","description":"It's
+                    just a
+                    drill","quantity":"2"},{"id":"5","name":"Screws","description":"A
+                    single box of 200
+                    screws","quantity":"18"}],"status":"Despatched"}
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: order_id '7' does not exist
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+      tags:
+        - Orders
+  /products:
+    summary: View orders
+    description: This path is used to retrieve all product data
+    get:
+      summary: Get products data
+      description: Retireve all the products data
+      operationId: products-getByCategory
+      
+      parameters:
+        - name: category
+          in: query
+          description: The id of the order.
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Returns products containing the following string.
+          required: false
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+  /products/{id}:
+    summary: Modify particular product
+    description: This path is used to view and modify data for a particular product
+    get:
+      summary: Get data for particular product
+      description: Retrieve all the data of a specific product
+      operationId: product-get-id
+      parameters:
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: Default error sample response
+      tags:
+        - Products
+    put:
+      summary: Add product to cart
+      description: >-
+        Add the product with the specified id too the current sessions users
+        cart
+      operationId: product-add
+      requestBody:
+        description: Information used to update the existing cart
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: number
+                quantity:
+                  type: number
+      parameters:
+        - name: id
+          in: path
+          description: The id of the order.
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Succesfull put response
+          content:
+            application/json:
+              examples:
+                order:
+                  value: '{"order_id":"1","product_id":"12","quantity":"2"}'
+        '400':
+          description: Bad data provided
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: product_id '7' does not exist
+        '403':
+          description: Not authenticated
+          content:
+            text/plain:
+              examples:
+                error:
+                  value: you are not authoried to perform this action
+      tags:
+        - Products

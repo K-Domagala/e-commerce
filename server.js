@@ -1,20 +1,16 @@
 const express = require('express');
 const app = express();
-const fs = require('fs');
-const { Client } = require('pg')
-const client = new Client({
-  host: 'localhost',
-  user: 'postgres',
-  port: 5432,
-  password: 'postgres',
-  database: 'e-commerce'
-});
+const users = require('./users');
 
 app.set('port', process.env.PORT || 3000);
+
+app.use(express.json());
 
 app.get('/',(request,response)=>{
  response.send('Welcome to our simple online order managing web app!');
 });
+
+app.use('/users', users);
 
 //Example client query
 /*

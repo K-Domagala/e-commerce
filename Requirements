@@ -1,0 +1,43 @@
+Build a functioning e-commerce REST API using Express, Node.js, and Postgres
+Allow users to register and log in via the API
+Allow CRUD operations on products
+Allow CRUD operations on user accounts
+Allow CRUD operations on user carts
+Allow a user to place an order
+Allow CRUD operations on orders
+Use Git version control
+Use command line
+Develop locally on your computer
+Document the API using Swagger
+
+Layout and endpoints:
+
+/login - users can log into their existing account
+    - textbox for username and password
+    - register button
+/register - users can register to the website
+    - first name, last name, address etc.
+    - email and password setup
+    - front end validation (specific errors) and back end validation ('something went wrong')
+- use passport to store login info, cookies to keep login state
+- pass login state to store?
+/profile - profile page for logged in user
+    - if no user, redirect to login page
+    - post request for changing details
+    - delete request for deleting/deactivating user
+
+/ - main homepage with nav and basic home page layout (popular products, login and register buttons)
+
+/c/{category} - get request for all product details from a certain category
+
+/p/{productId} - page of the product
+    - post request for adding product to cart
+/search? - get request search for products with the search param - sql query for details containing search term
+
+/cart - get request for users cart, pulled from sql using user getails and passport
+    - post request for modifying cart
+
+/checkout - go to checkout page to pay for stuff in ur cart
+
+/orders - page containing all of the users orders
+/orders/id? - request for specific order, requires passport

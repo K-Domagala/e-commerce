@@ -10,9 +10,7 @@ const cookieParser = require('cookie-parser')
 const initializePassport = require('./passport-config');
 const { response } = require('express');
 
-
 app.set('port', 3001);
-//app.use(express.json());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -29,6 +27,7 @@ app.use(cookieParser('secrets'))
 app.use(passport.initialize());
 app.use(passport.session());
 initializePassport(passport);
+
 app.get('/',(request,response)=>{
   response.json({msg: 'Welcome to our e-commerce website!!'});
 });
@@ -57,49 +56,7 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-// app.post('/login', (req, res, next) => {
-//   console.log('recieved req')
-//   passport.authenticate('local', (err, user, info) => {
-//     if (err) throw err;
-//     if(!user) console.log('No user exists');
-//     else {
-//       req.logIn(user, (err) => {
-//         if(err) throw err;
-//         console.log('Successfull login');
-//         res.redirect('http://localhost:3000/login');
-//       })
-//     }
-//   })(req, res, next)
-// })
-
 app.use('/users', users);
-
-//Example client query
-/*
-const text = 'DELETE FROM products WHERE id=$1;';
-const values = [2];
-// callback
-client.query(text, values, (err, res) => {
-  if (err) {
-    console.log(err.stack);
-  } else {
-    console.log(res.rows[0]);
-    // { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
-  }
-});
-*/
-
-//Add CURL here
-
-
-
-// client.query('SELECT * FROM products;', [], (err, res) => {
-//   if(err){
-//     console.log(err);
-//   } else {
-//     console.log(res.rows);
-//   }
-// });
 
 app.listen(3001,()=>{
  console.log('Express server started at port 3001');

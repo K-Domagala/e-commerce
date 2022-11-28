@@ -1,0 +1,22 @@
+//Example client query
+
+const text = 'DELETE FROM products WHERE id=$1;';
+const values = [2];
+// callback
+client.query(text, values, (err, res) => {
+  if (err) {
+    console.log(err.stack);
+  } else {
+    console.log(res.rows[0]);
+    // { name: 'brianc', email: 'brian.m.carlson@gmail.com' }
+  }
+});
+
+
+client.query('SELECT * FROM products;', [], (err, res) => {
+  if(err){
+    console.log(err);
+  } else {
+    console.log(res.rows);
+  }
+});

@@ -1,28 +1,10 @@
 const localStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const client = require('./portgresClient');
-
-const getIdByEmail = async (email) => {
-    let user = {};
-    await client
-        .query('SELECT * FROM users WHERE email=$1', [email])
-        .then((result) => user = result.rows[0])
-        .catch((e) => console.error(e.stack))
-    return user;
-}
-
-const getUserById = async (id) => {
-    let user = {}
-    await client
-        .query('SELECT * FROM users WHERE id=$1', [id])
-        .then((result) => user = result.rows[0])
-        .catch((e) => console.error(e.stack))
-    return user;
-}
+const pQuery = require('./postgresUtil');
 
 function initialize(passport){
     const authenticateUser = async (username, password, done) => {
-        const user = await getIdByEmail(username);
+        const user = await pQuery.getIdByEmail(username);
         if(user?.id==null){
             console.log('No user found with this email address');
             return done(null, false, {message:'No user found with this email'});
@@ -45,7 +27,7 @@ function initialize(passport){
         done(null, user.id)
     })
     passport.deserializeUser(async (id, done) => {
-        const user = await getUserById(id);
+        const user = await pQuery.getUserById(id);
         console.log(user);
         done(null, user)
     })

@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const users = require('./users');
+const users = require('./routes/users');
+const products = require('./routes/products');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
@@ -57,6 +58,7 @@ app.post("/login", (req, res, next) => {
 });
 
 app.use('/users', users);
+app.use('/product', products)
 
 app.listen(3001,()=>{
  console.log('Express server started at port 3001');

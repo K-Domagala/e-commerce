@@ -2,16 +2,10 @@ const express = require('express')
 const router = express.Router()
 const pQuery = require('../postgresUtil');
 
-// middleware that is specific to this router
-router.use((req, res, next) => {
-    console.log('Time: ', Date.now())
-    next()
-})
-
 // get product information
 router.get('/:id', async (req, res) => {
-    const product = await pQuery.getProductById(req.params.id);
-    res.json(product);
+    console.log('id: ' + req.params.id)
+    res.json(await pQuery.getProductById(req.params.id))
 });
 
 // get products by category and/or search paramater
@@ -24,6 +18,7 @@ router.get('/', async (req, res) => {
         products = await pQuery.getProductsByCategory(category);
     } else {
         products = await pQuery.getProducts();
+        console.log('all retrieved')
     }
 
     if(searchTerm){

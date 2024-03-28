@@ -2,28 +2,52 @@ const express = require('express')
 const router = express.Router()
 const client = require('../portgresClient');
 const bcrypt = require('bcrypt');
-
-// middleware that is specific to this router
-router.use((req, res, next) => {
-  console.log('Time: ', Date.now())
-  next()
-})
+const pQuery  = require('../postgresUtil');
 
 // get user information
-router.get('/:id', (req, res) => {
-    let id = req.params.id;
-    res.send(`Displaying user ${id}`)
+router.get('/', async (req, res) => {
+    let id = req.user?.id;
+    console.log(id);
+    if(!id){
+        console.log('user not logged in')
+        res.json({redirect: true})
+    } else {
+        let user = await pQuery.getUserById(id)
+        console.log(user);
+        res.json(user);
+    }
 });
 
-router.put('/', (req, res) => {
-    let id = req.user.id;
+router.post('/', (req, res) => {
+    let id = req.user.id
     if(!id){
         console.log('No user logged in');
         res.json({message: 'No user serialised'});
     } else {
-        console.log('Insert logic to update user info');
-        res.json({message: 'success'});
+        client.query('UPDATE users SET first_name = $2, last_name = $3, email = $4, address_1 = $5, address_2 = $6, address_3 = $7, postcode = $8, phone_number = $9 WHERE id = $1',
+            [id, req.body.firstName, req.body.lastName, req.body.email, req.body.address1, req.body.address2, req.body.address3, req.body.postcode, req.body.phoneNumber])
+            .then((result) => res.json({message: 'User info updated'}))
+            .catch(e => console.error(e.stack))
     }
+})
+
+router.post('/password', async (req, res) => {
+    let password = req.body.input
+    let id = req.user?.id;
+    if(!id){
+        res.json({message: 'You are not logged in'})
+    } else {
+        try {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            client.query('UPDATE users SET password = $2 WHERE id = $1', [id, hashedPassword])
+                .then((result) => {
+                    res.json({message: 'Password updated'})
+                })
+        } catch(e) {
+            res.send(e);
+        }
+    }
+    
 })
 
 // create a new user

@@ -3,13 +3,14 @@ const bodyParser = require('body-parser');
 const app = express();
 const users = require('./routes/users');
 const products = require('./routes/products');
+const cart = require('./routes/cart');
+const orders = require('./routes/orders');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
 const cookieParser = require('cookie-parser')
 
 const initializePassport = require('./passport-config');
-const { response } = require('express');
 
 app.set('port', 3001);
 
@@ -57,8 +58,28 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+app.post('/logout', (req, res, next) => {
+  if(req.user){
+    console.log('logging out')
+  }
+  req.logout(err => {
+    if (err) throw err;
+    res.json({message: 'success'})
+  })
+  // res.jron({message: 'something went wrong'})
+})
+
 app.use('/users', users);
-app.use('/product', products)
+app.use('/product', products);
+app.use('/cart', cart);
+app.use('/orders', orders);
+app.post('/webhook', bodyParser.raw({type: 'application/json'}), (request, response) => {
+  const payload = request.body;
+
+  console.log("Got payload: " + payload);
+
+  response.status(200).end();
+});
 
 app.listen(3001,()=>{
  console.log('Express server started at port 3001');

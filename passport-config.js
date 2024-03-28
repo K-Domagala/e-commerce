@@ -28,7 +28,6 @@ function initialize(passport){
     })
     passport.deserializeUser(async (id, done) => {
         const user = await pQuery.getUserById(id);
-        console.log(user);
         done(null, user)
     })
 }
